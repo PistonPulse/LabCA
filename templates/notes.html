@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}My Notes{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <!-- SECTION 1: Add a Note -->
+    <div class="col-12 mb-5">
+        <h3 class="mb-3">Add a New Note</h3>
+        
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST" action="/notes">
+            <div class="mb-1">
+                <textarea class="form-control" id="noteContent" name="content" placeholder="Write your note here..." maxlength="500" rows="4" required></textarea>
+            </div>
+            <!-- Character counter -->
+            <div class="text-end text-muted small mb-3">
+                <span id="charCount">500</span> characters left
+            </div>
+            <button type="submit" class="btn btn-primary">Save Note</button>
+        </form>
+    </div>
+
+    <hr>
+
+    <!-- SECTION 2: My Notes -->
+    <div class="col-12 mt-4">
+        <h3 class="mb-4">My Notes</h3>
+        
+        <div class="row">
+            {% for note in notes %}
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <p class="card-text" style="white-space: pre-wrap;">{{ note.content }}</p>
+                    </div>
+                    <div class="card-footer bg-white border-top-0">
+                        <small class="text-muted">Added on: {{ note.created_at }}</small>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12">
+                <p>You have no notes yet. Add one above!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const textarea = document.getElementById('noteContent');
+        const counter = document.getElementById('charCount');
+        const maxLength = parseInt(textarea.getAttribute('maxlength'));
+
+        textarea.addEventListener('input', function() {
+            const currentLength = textarea.value.length;
+            const remaining = maxLength - currentLength;
+            counter.textContent = remaining;
+        });
+    });
+</script>
+{% endblock %}
